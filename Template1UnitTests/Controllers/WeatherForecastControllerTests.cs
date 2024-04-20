@@ -20,7 +20,7 @@ public class WeatherForecastControllerTests
     public void Get_ShouldReturnCorrectOutput()
     {
         var dummyExpected = new WeatherForecast[] {};
-        mockLogic.Setup(x => x.Get(5))
+        mockLogic.Setup(x => x.Get(3))
             .Returns(dummyExpected);
         var output = sut.Get();
         Assert.Same(dummyExpected, output);

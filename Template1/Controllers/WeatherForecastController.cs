@@ -20,7 +20,7 @@ namespace Template1.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            var output = logic.Get(5);
+            var output = logic.Get(3);
             return output;
         }
 

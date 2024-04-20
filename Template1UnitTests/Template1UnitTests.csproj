@@ -20,4 +20,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Template1\Template1.csproj" />
+  </ItemGroup>
+
 </Project>

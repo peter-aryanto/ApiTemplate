@@ -1,9 +1,11 @@
+using Template1.Logics;
 using Template1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddScoped<IWeatherForecastLogic, WeatherForecastLogic>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -27,15 +29,17 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast0", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    // var forecast =  Enumerable.Range(1, 5).Select(index =>
+    //     new WeatherForecast
+    //     (
+    //         DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+    //         Random.Shared.Next(-20, 55),
+    //         summaries[Random.Shared.Next(summaries.Length)]
+    //     ))
+    //     .ToArray();
+    // return forecast;
+    var output = new WeatherForecastLogic().Get(5);
+    return output;
 })
 .WithName("GetWeatherForecast0")
 .WithOpenApi();

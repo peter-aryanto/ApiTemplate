@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Template1.Logics;
 using Template1.Models;
 
 namespace Template1.Controllers
@@ -8,24 +9,19 @@ namespace Template1.Controllers
     [ApiController]
     public class WeatherForecastController : ControllerBase
     {
+        private readonly IWeatherForecastLogic logic;
+
+        public WeatherForecastController(IWeatherForecastLogic logic)
+        {
+            this.logic = logic;
+        }
+
         // GET: api/<WeatherForecastController>
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            var summaries = new[]
-            {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
-
-            var forecast =  Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-                .ToArray();
-            return forecast;
+            var output = logic.Get(5);
+            return output;
         }
 
         // GET api/<WeatherForecastController>/5

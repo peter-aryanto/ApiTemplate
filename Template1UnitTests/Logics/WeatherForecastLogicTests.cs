@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Moq;
+using RestSharp;
 using Template1.Logics;
 using Template1.Models;
 
@@ -46,5 +48,21 @@ public class WeatherForecastLogicTests
 
         output = sut.Get();
         Assert.Equal(WeatherForecastLogic.DefaultDayCount, output.Count());
+    }
+
+    [Fact]
+    public async Task GetGoogle_ShouldReturnGoogleSearch()
+    {
+        const string ExpectedGS = "Google Search";
+        var expectedRes = new RestResponse()
+        {
+            StatusCode = System.Net.HttpStatusCode.OK,
+            Content = $"...{ExpectedGS}..."
+        };
+        var mockRestClient = new Mock<IRestClient>();
+        mockRestClient.Setup(x => x.ExecuteAsync(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(expectedRes));
+        var res = await sut.GetGoogleAsync(mockRestClient.Object);
+        Assert.Equal($"{expectedRes.StatusCode} - {ExpectedGS}", res);
     }
 }

@@ -24,6 +24,13 @@ namespace Template1.Controllers
             return output;
         }
 
+        [HttpGet("g")]
+        public async Task<string> GetGoogle()
+        {
+            var output = await logic.GetGoogleAsync();
+            return output;
+        }
+
         // GET api/<WeatherForecastController>/5
         [HttpGet("{id}")]
         public string Get(int id)

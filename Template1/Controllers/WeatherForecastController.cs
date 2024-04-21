@@ -40,6 +40,28 @@ namespace Template1.Controllers
             return output;
         }
 
+        /*
+// LinqPad
+var Ser = (object o) => System.Text.Json.JsonSerializer.Serialize(o);
+var Show = (object o) =>
+{
+    if (o!= null && o is not string && !o.GetType().IsPrimitive)
+//        o = System.Text.Json.JsonSerializer.Serialize(o);
+        o = Ser(o);
+
+	Console.WriteLine($"|{o?.ToString()}|{Environment.NewLine}");
+};
+
+var client = new RestClient(new Uri("http://localhost:5000"));
+var req = new RestRequest("api/weatherforecast/create", Method.Post);
+req.AddParameter("application/json", Ser(new {Value1 = "Val 11", Value2 = "Val 22"}), ParameterType.RequestBody);
+var res = await client.ExecuteAsync(req);
+
+//res.StatusCode.Dump();
+//res.Content.Dump();
+Show(res.StatusCode);
+Show(res.Content);
+        */
         // [HttpPost("create")]
         // // public async Task<KeyValue> CreateInDbAsync([FromBody]System.Text.Json.JsonElement inputJson)
         // public async Task<KeyValue> CreateInDbAsync([FromBody]KeyValue keyValue)

@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="entityframeworkcoremock.moq" Version="2.4.0" />
+    <!-- <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" /> -->
     <!-- <PackageReference Include="entityframeworkmock.moq" Version="1.0.0.72" /> -->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.70" />

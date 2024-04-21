@@ -18,9 +18,20 @@ public class KeyValueQueries : IKeyValueQueries
         this.context = context;
     }
 
-    public Task<KeyValue> CreateAsync(string key, string val1, string val2)
+    public async Task<KeyValue> CreateAsync(string key, string val1, string val2)
     {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
+        //qwe8
+        var rec = new KeyValue
+        {
+            Key = key,
+            Value1 = val1,
+            Value2 = val2,
+        };
+        // context.KeyValues.Add(rec);
+        await context.SaveChangesAsync();
+        return rec;
+        // return null;
     }
 
     public async Task<List<KeyValue>> GetAsync()

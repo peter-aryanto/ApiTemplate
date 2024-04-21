@@ -15,6 +15,7 @@ public class KeyValueQueriesTests
     private DbContextMock<Context1> mockContext;
     private KeyValueQueries sut2;
     private Mock<Context1> mockContext2;
+    // private Mock<DbSet<KeyValue>> mockKeyValueDbSet;
     private List<KeyValue> testKeyValues;
     private List<AdditionalInfo> testAdditionalInfos;
 
@@ -34,10 +35,12 @@ public class KeyValueQueriesTests
         testKeyValues[0].AdditionalInfos.Add(testAdditionalInfos[0]);
         mockContext.CreateDbSetMock(x => x.KeyValues, testKeyValues);
         mockContext.CreateDbSetMock(x => x.AdditionalInfos, testAdditionalInfos);
+        mockContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).Verifiable();
         sut = new KeyValueQueries(mockContext.Object);
 
         mockContext2 = new Mock<Context1>();
         mockContext2.Setup(x => x.KeyValues).ReturnsDbSet(testKeyValues);
+        mockContext2.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).Verifiable();
         sut2 = new KeyValueQueries(mockContext2.Object);
 
         // var mockKeyValueDbSet = CreateMockDbSet(testKeyValues.AsQueryable());
@@ -57,15 +60,38 @@ public class KeyValueQueriesTests
     //     return mockSet;
     // }
 
+    //qwe7
+    [Fact]
+    public async Task Create_ShouldReturnCreatedKeyValue()
+    {
+        var key = "Key";
+        var val1 = "Val 1";
+        var val2 = "Val 2";
+        var output = await sut.CreateAsync(key, val1, val2);
+        mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(key, output.Key);
+        Assert.Equal(val1, output.Value1);
+        Assert.Equal(val2, output.Value2);
+
+        var IsAddingCreatedKeyValue = (KeyValue x) => x.Key == key && x.Value1 == val1 && x.Value2 == val2;
+        // mockKeyValueDbSet.Setup(x => x.Add(It.Is<KeyValue>(y => IsAddingCreatedKeyValue(y)))).Verifiable();
+        output = await sut2.CreateAsync(key, val1, val2);
+        // mockKeyValueDbSet.Verify(x => x.Add(It.Is<KeyValue>(y => IsAddingCreatedKeyValue(y))), Times.Once);
+        mockContext2.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(key, output.Key);
+        Assert.Equal(val1, output.Value1);
+        Assert.Equal(val2, output.Value2);
+    }
+
     [Fact]
     public async Task Get_ShouldReturnKeyValueList()
     {
-      var output = await sut.GetAsync();
-      Assert.Equal(testKeyValues.Count, output.Count);
-      Assert.Equal(testKeyValues[0].AdditionalInfos.First(), output[0].AdditionalInfos.First());
+        var output = await sut.GetAsync();
+        Assert.Equal(testKeyValues.Count, output.Count);
+        Assert.Equal(testKeyValues[0].AdditionalInfos.First(), output[0].AdditionalInfos.First());
 
-      var output2 = await sut2.GetAsync();
-      Assert.Equal(testKeyValues.Count, output2.Count);
-      Assert.Equal(testKeyValues[0].AdditionalInfos.First(), output2[0].AdditionalInfos.First());
+        output = await sut2.GetAsync();
+        Assert.Equal(testKeyValues.Count, output.Count);
+        Assert.Equal(testKeyValues[0].AdditionalInfos.First(), output[0].AdditionalInfos.First());
     }
 }

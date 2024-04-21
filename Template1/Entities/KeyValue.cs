@@ -5,7 +5,8 @@ public class KeyValue
   public KeyValue()
   {
     AdditionalInfos = new HashSet<AdditionalInfo>();
-    Key = Guid.NewGuid().ToString();
+    // Key = Guid.NewGuid().ToString();
+    Key = string.Empty;
   }
 
   public int KeyValueId { get; set; }

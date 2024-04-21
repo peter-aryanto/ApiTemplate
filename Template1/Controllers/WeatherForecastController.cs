@@ -32,6 +32,14 @@ namespace Template1.Controllers
             return output;
         }
 
+        [HttpGet("create")]
+        public async Task<KeyValue> CreateInDbAsync([FromQuery]string val1, [FromQuery]string val2)
+        {
+            //qwe1
+            var output = await logic.CreateKeyValueAsync(val1, val2);
+            return output;
+        }
+
         [HttpGet("read")]
         public async Task<List<KeyValue>> ReadFromDbAsync()
         {

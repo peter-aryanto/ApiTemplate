@@ -38,6 +38,18 @@ public class WeatherForecastControllerTests
         Assert.Same(dummyExpected, output);
     }
 
+    //qwe2
+    [Fact]
+    public async Task CreateInDb_ShouldReturnCreatedRecord()
+    {
+        var dummyExpected = new KeyValue();
+        mockLogic.Setup(x => x.CreateKeyValueAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(dummyExpected);
+#pragma warning disable CS8604 // Possible null reference argument.
+        var output = await sut.CreateInDbAsync(dummyExpected.Value1, dummyExpected.Value2);
+        Assert.Same(dummyExpected, output);
+    }
+
     [Fact]
     public async Task ReadFromDb_ShouldReturnRecordList()
     {

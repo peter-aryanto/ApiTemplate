@@ -5,7 +5,7 @@ using Template1.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddContext1();
+builder.Services.AddContext1(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddScoped<IWeatherForecastLogic, WeatherForecastLogic>();
 

@@ -9,6 +9,10 @@ namespace Template1
     // private readonly ICurrentUserService _currentUserService;
     // private readonly IDateTime _dateTime;
 
+    // internal static readonly DbContextOptions<Context1> Options = new();
+    // public Context1() : this(Options)
+    // {}
+
     public Context1(DbContextOptions<Context1> options) : base(options)
     {}
 
@@ -58,11 +62,18 @@ namespace Template1
 
   public static class Context1Service
   {
-    public static IServiceCollection AddContext1(this IServiceCollection services/*, IConfiguration config*/)
+    // private record ConnStrings(string Context1);
+
+    public static IServiceCollection AddContext1(this IServiceCollection services, ConfigurationManager configManager)
     {
+      // var configManager = builder.Configuration;
+      // var connStrings = configManager.GetSection("ConnectionStrings").Get<ConnStrings>();
+      // var connString = connStrings.Context1
+      var connString = configManager["ConnectionStrings:Context1"];
+      Console.WriteLine($"|Console: {connString}|{Environment.NewLine}=======");
       services.AddDbContext<Context1>(options =>
-          options.UseSqlServer()
-          // options.UseSqlServer("Server=10.252.150.206;Database=dbMigration;User Id=sa;Password=5SNMsmZrqgvTso8OUpJ2;Encrypt=true;trustServerCertificate=true;")
+          // options.UseSqlServer()
+          options.UseSqlServer(connString)
         );
       return services;
     }

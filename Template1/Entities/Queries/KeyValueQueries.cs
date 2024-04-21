@@ -39,6 +39,7 @@ public class KeyValueQueries : IKeyValueQueries
     public async Task<List<KeyValue>> GetAsync()
     {
         var output = await context.KeyValues
+            .Include(nameof(KeyValue.AdditionalInfos))
             .ToListAsync();
         return output;
     }

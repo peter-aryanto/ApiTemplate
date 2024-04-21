@@ -2,12 +2,19 @@ using Template1;
 using Template1.Logics;
 using Template1.Models;
 using Template1.Entities.Queries;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddContext1(builder.Configuration);
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.DictionaryKeyPolicy = null;
+    });
 builder.Services.AddScoped<IWeatherForecastLogic, WeatherForecastLogic>();
 builder.Services.AddScoped<IKeyValueQueries, KeyValueQueries>();
 

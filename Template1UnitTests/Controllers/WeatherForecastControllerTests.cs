@@ -3,6 +3,7 @@ using Template1.Logics;
 using Moq;
 using Template1.Models;
 using RestSharp;
+using Template1.Entities;
 
 namespace Template1UnitTests;
 
@@ -34,6 +35,16 @@ public class WeatherForecastControllerTests
         mockLogic.Setup(x => x.GetGoogleAsync(It.IsAny<IRestClient>()))
             .Returns(Task.FromResult(dummyExpected));
         var output = await sut.GetGoogle();
+        Assert.Same(dummyExpected, output);
+    }
+
+    [Fact]
+    public async Task ReadFromDb_ShouldReturnRecordList()
+    {
+        var dummyExpected = new List<KeyValue>();
+        mockLogic.Setup(x => x.GetKeyValuesAsync())
+            .ReturnsAsync(dummyExpected);
+        var output = await sut.ReadFromDbAsync();
         Assert.Same(dummyExpected, output);
     }
 }

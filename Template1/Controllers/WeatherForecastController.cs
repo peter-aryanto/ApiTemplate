@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Template1.Entities;
 using Template1.Logics;
 using Template1.Models;
 
@@ -28,6 +29,14 @@ namespace Template1.Controllers
         public async Task<string> GetGoogle()
         {
             var output = await logic.GetGoogleAsync();
+            return output;
+        }
+
+        [HttpGet("read")]
+        public async Task<List<KeyValue>> ReadFromDbAsync()
+        {
+            var output = await logic.GetKeyValuesAsync();
+            // output.Add(new() {KeyValueId = 1, Key = "Key1", Value1 = "Value1", Value2 = "Value2"});
             return output;
         }
 

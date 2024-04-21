@@ -3,16 +3,22 @@ using Moq;
 using RestSharp;
 using Template1.Logics;
 using Template1.Models;
+using Template1.Entities.Queries;
+using Template1.Entities;
 
 namespace Template1UnitTests;
 
 public class WeatherForecastLogicTests
 {
     private IWeatherForecastLogic sut;
+    private Mock<IKeyValueQueries> mockKeyValueQueries;
 
     public WeatherForecastLogicTests()
     {
-        sut = new WeatherForecastLogic();
+        mockKeyValueQueries = new Mock<IKeyValueQueries>();
+        mockKeyValueQueries.Setup(x => x.GetAsync())
+            .ReturnsAsync(new List<KeyValue>());
+        sut = new WeatherForecastLogic(mockKeyValueQueries.Object);
     }
 
     [Fact]
@@ -64,5 +70,12 @@ public class WeatherForecastLogicTests
             .Returns(Task.FromResult(expectedRes));
         var res = await sut.GetGoogleAsync(mockRestClient.Object);
         Assert.Equal($"{expectedRes.StatusCode} - {ExpectedGS}", res);
+    }
+
+    [Fact]
+    public async Task GetKeyalues_ShouldReturnKeyValueList()
+    {
+        var output = await sut.GetKeyValuesAsync();
+        Assert.True(output is List<KeyValue>);
     }
 }

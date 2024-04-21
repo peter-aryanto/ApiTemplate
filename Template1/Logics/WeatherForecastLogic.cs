@@ -1,5 +1,7 @@
 using RestSharp;
 using Template1.Models;
+using Template1.Entities;
+using Template1.Entities.Queries;
 
 namespace Template1.Logics;
 
@@ -10,14 +12,19 @@ public interface IWeatherForecastLogic
     // public IEnumerable<WeatherForecast> Get(int dayCount = DefaultDayCount);
     public IEnumerable<WeatherForecast> Get(int? dayCount = null);
     public Task<string> GetGoogleAsync(IRestClient? restClient = null);
+    public Task<List<KeyValue>> GetKeyValuesAsync();
 }
 
 public class WeatherForecastLogic : IWeatherForecastLogic
 {
     public const int DefaultDayCount = 3;
 
-    public WeatherForecastLogic()
-    {}
+    private readonly IKeyValueQueries keyValueQueries;
+
+    public WeatherForecastLogic(IKeyValueQueries keyValueQueries)
+    {
+        this.keyValueQueries = keyValueQueries;
+    }
 
     // public WeatherForecastLogic(IRestClient restClient)
     // {
@@ -64,5 +71,11 @@ public class WeatherForecastLogic : IWeatherForecastLogic
         var res = await restClient.ExecuteAsync(restRequest);
         const string gs = "Google Search";
         return Show($"{res.StatusCode} - {res.Content?.Substring(res.Content.IndexOf(gs), gs.Length)}");
+    }
+
+    public async Task<List<KeyValue>> GetKeyValuesAsync()
+    {
+        var output = await keyValueQueries.GetAsync();
+        return output;
     }
 }

@@ -16,6 +16,9 @@ namespace Template1
     public Context1(DbContextOptions<Context1> options) : base(options)
     {}
 
+    public Context1() : base() // Parameterless constructor for EF Core Mock in unit tests.
+    {}
+
     /*
     public Context1(
       DbContextOptions<Context1> options,
@@ -28,9 +31,9 @@ namespace Template1
     }
     */
 
-    public DbSet<KeyValue> KeyValues { get; set; }
+    public virtual DbSet<KeyValue> KeyValues { get; set; }
 
-    public DbSet<AdditionalInfo> AdditionalInfos { get; set; }
+    public virtual DbSet<AdditionalInfo> AdditionalInfos { get; set; }
 
     /*
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

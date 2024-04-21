@@ -1,6 +1,7 @@
 using Template1;
 using Template1.Logics;
 using Template1.Models;
+using Template1.Entities.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddContext1(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddScoped<IWeatherForecastLogic, WeatherForecastLogic>();
+builder.Services.AddScoped<IKeyValueQueries, KeyValueQueries>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -40,7 +42,7 @@ app.MapGet("/weatherforecast0", () =>
     //     ))
     //     .ToArray();
     // return forecast;
-    var output = new WeatherForecastLogic().Get(5);
+    var output = new WeatherForecastLogic(new KeyValueQueries(null)).Get(5);
     return output;
 })
 .WithName("GetWeatherForecast0")

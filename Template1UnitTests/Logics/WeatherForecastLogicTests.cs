@@ -72,10 +72,29 @@ public class WeatherForecastLogicTests
         Assert.Equal($"{expectedRes.StatusCode} - {ExpectedGS}", res);
     }
 
+    //qwe4
+    [Fact]
+    public async Task CreateKeyalues_ShouldReturnCreatedKeyValue()
+    {
+        var expected = new KeyValue { KeyValueId = 1, Value1 = "Val 1", Value2 = "Val 2" };
+        mockKeyValueQueries.Setup(x => x.CreateAsync(It.Is<string>(y => y.Contains(DateTime.UtcNow.Year.ToString())), expected.Value1, expected.Value2))
+            .ReturnsAsync(expected);
+        var output = await sut.CreateKeyValueAsync(expected.Value1, expected.Value2);
+        Assert.Same(expected, output);
+
+        expected = new KeyValue();
+        output = await sut.CreateKeyValueAsync(null, null);
+        Assert.Equal(-1, output.KeyValueId);
+    }
+
     [Fact]
     public async Task GetKeyalues_ShouldReturnKeyValueList()
     {
+        var expected = new List<KeyValue>();
+        mockKeyValueQueries.Setup(x => x.GetAsync())
+            .ReturnsAsync(expected);
         var output = await sut.GetKeyValuesAsync();
-        Assert.True(output is List<KeyValue>);
+        // Assert.True(output is List<KeyValue>);
+        Assert.Same(expected, output);
     }
 }

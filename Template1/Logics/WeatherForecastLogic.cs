@@ -77,7 +77,23 @@ public class WeatherForecastLogic : IWeatherForecastLogic
 
     public async Task<KeyValue> CreateKeyValueAsync(string? val1, string? val2)
     {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
+        //qwe5
+        if (val1 == null || val2 == null)
+        {
+            return new()
+            {
+                KeyValueId = -1,
+                Key = string.Empty,
+            };
+        }
+
+        var melbTimezone = TimeZoneInfo.FindSystemTimeZoneById("AUS Eastern Standard Time");
+        var melbDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, melbTimezone);
+        var melbDateTimeString = melbDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+        var output = await keyValueQueries.CreateAsync(melbDateTimeString, val1, val2);
+        return output;
     }
 
     public async Task<List<KeyValue>> GetKeyValuesAsync()

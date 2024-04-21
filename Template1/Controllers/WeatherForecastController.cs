@@ -40,6 +40,16 @@ namespace Template1.Controllers
             return output;
         }
 
+        // [HttpPost("create")]
+        // // public async Task<KeyValue> CreateInDbAsync([FromBody]System.Text.Json.JsonElement inputJson)
+        // public async Task<KeyValue> CreateInDbAsync([FromBody]KeyValue keyValue)
+        // {
+        //     //qwe1
+        //     // var output = await logic.CreateKeyValueAsync(inputJson["val1"], inputJson["val2"]);
+        //     var output = await logic.CreateKeyValueAsync(keyValue.Value1, keyValue.Value2);
+        //     return output;
+        // }
+
         [HttpGet("read")]
         public async Task<List<KeyValue>> ReadFromDbAsync()
         {

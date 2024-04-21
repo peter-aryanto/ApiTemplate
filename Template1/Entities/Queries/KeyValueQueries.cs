@@ -29,6 +29,8 @@ public class KeyValueQueries : IKeyValueQueries
             Value2 = val2,
         };
         context.KeyValues.Add(rec);
+        // var additionalInfo = new AdditionalInfo { KeyValue = rec };
+        // rec.AdditionalInfos.Add(additionalInfo);
         await context.SaveChangesAsync();
         return rec;
         // return null;

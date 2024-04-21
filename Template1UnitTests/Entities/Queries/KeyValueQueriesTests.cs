@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Template1.Entities.Queries;
 using Template1.Entities;
 using Template1;
+using System.Linq.Expressions;
 
 namespace Template1UnitTests;
 
@@ -15,7 +16,10 @@ public class KeyValueQueriesTests
     private DbContextMock<Context1> mockContext;
     private KeyValueQueries sut2;
     private Mock<Context1> mockContext2;
-    // private Mock<DbSet<KeyValue>> mockKeyValueDbSet;
+    private KeyValueQueries sut3;
+    private Mock<Context1> mockContext3;
+    private Mock<DbSet<KeyValue>> mockKeyValueDbSet;
+    private Expression<Func<KeyValue, bool>> IsAddingCreatedKeyValue = (KeyValue x) => false;
     private List<KeyValue> testKeyValues;
     private List<AdditionalInfo> testAdditionalInfos;
 
@@ -43,12 +47,17 @@ public class KeyValueQueriesTests
         mockContext2.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).Verifiable();
         sut2 = new KeyValueQueries(mockContext2.Object);
 
-        // var mockKeyValueDbSet = CreateMockDbSet(testKeyValues.AsQueryable());
+        // mockKeyValueDbSet = CreateMockDbSet(testKeyValues.AsQueryable());
+        mockKeyValueDbSet = new Mock<DbSet<KeyValue>>();
+        mockKeyValueDbSet.Setup(x => x.Add(It.Is<KeyValue>(IsAddingCreatedKeyValue))).Verifiable();
         // mockKeyValueDbSet.Setup(x => x.Include(nameof(KeyValue.AdditionalInfos))).Returns(mockKeyValueDbSet.Object);
-        // mockContext2 = new Mock<Context1>();
-        // mockContext2.Setup(x => x.KeyValues).Returns(mockKeyValueDbSet.Object);
-        // sut = new KeyValueQueries(mockContext2.Object);
+        mockContext3 = new Mock<Context1>();
+        // mockContext3.Setup(x => x.KeyValues).ReturnsDbSet(mockKeyValueDbSet.Object);
+        mockContext3.Setup(x => x.KeyValues).Returns(mockKeyValueDbSet.Object);
+        mockContext3.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).Verifiable();
+        sut3 = new KeyValueQueries(mockContext3.Object);
     }
+
 
     // private Mock<DbSet<T>> CreateMockDbSet<T>(IQueryable<T> entities) where T : class
     // {
@@ -73,11 +82,33 @@ public class KeyValueQueriesTests
         Assert.Equal(val1, output.Value1);
         Assert.Equal(val2, output.Value2);
 
-        var IsAddingCreatedKeyValue = (KeyValue x) => x.Key == key && x.Value1 == val1 && x.Value2 == val2;
-        // mockKeyValueDbSet.Setup(x => x.Add(It.Is<KeyValue>(y => IsAddingCreatedKeyValue(y)))).Verifiable();
         output = await sut2.CreateAsync(key, val1, val2);
-        // mockKeyValueDbSet.Verify(x => x.Add(It.Is<KeyValue>(y => IsAddingCreatedKeyValue(y))), Times.Once);
         mockContext2.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(key, output.Key);
+        Assert.Equal(val1, output.Value1);
+        Assert.Equal(val2, output.Value2);
+
+        output = await sut3.CreateAsync(key, val1, val2);
+        IsAddingCreatedKeyValue = (KeyValue x) => x.Key == key && x.Value1 == val1 && x.Value2 == val2;
+        mockKeyValueDbSet.Verify(x => x.Add(It.Is<KeyValue>(IsAddingCreatedKeyValue)), Times.Once);
+        mockContext2.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(key, output.Key);
+        Assert.Equal(val1, output.Value1);
+        Assert.Equal(val2, output.Value2);
+
+        var LocalIsAddingCreatedKeyValue = (KeyValue x) => x.Key == key && x.Value1 == val1 && x.Value2 == val2;
+        // var localMockKeyValueDbSet = CreateMockDbSet(testKeyValues.AsQueryable());
+        var localMockKeyValueDbSet = new Mock<DbSet<KeyValue>>();
+        localMockKeyValueDbSet.Setup(x => x.Add(It.Is<KeyValue>(y => LocalIsAddingCreatedKeyValue(y)))).Verifiable();
+        // localMockKeyValueDbSet.Setup(x => x.Include(nameof(KeyValue.AdditionalInfos))).Returns(localMockKeyValueDbSet.Object);
+        var localMockContext = new Mock<Context1>();
+        // localMockContext.Setup(x => x.KeyValues).ReturnsDbSet(mockKeyValueDbSet.Object);
+        localMockContext.Setup(x => x.KeyValues).Returns(localMockKeyValueDbSet.Object);
+        localMockContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).Verifiable();
+        var localSut = new KeyValueQueries(localMockContext.Object);
+        output = await localSut.CreateAsync(key, val1, val2);
+        localMockKeyValueDbSet.Verify(x => x.Add(It.Is<KeyValue>(y => LocalIsAddingCreatedKeyValue(y))), Times.Once);
+        localMockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         Assert.Equal(key, output.Key);
         Assert.Equal(val1, output.Value1);
         Assert.Equal(val2, output.Value2);

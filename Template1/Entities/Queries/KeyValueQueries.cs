@@ -28,7 +28,7 @@ public class KeyValueQueries : IKeyValueQueries
             Value1 = val1,
             Value2 = val2,
         };
-        // context.KeyValues.Add(rec);
+        context.KeyValues.Add(rec);
         await context.SaveChangesAsync();
         return rec;
         // return null;

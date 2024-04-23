@@ -38,22 +38,22 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast0", () =>
-{
-    // var forecast =  Enumerable.Range(1, 5).Select(index =>
-    //     new WeatherForecast
-    //     (
-    //         DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-    //         Random.Shared.Next(-20, 55),
-    //         summaries[Random.Shared.Next(summaries.Length)]
-    //     ))
-    //     .ToArray();
-    // return forecast;
-    var output = new WeatherForecastLogic(new KeyValueQueries(null)).Get(5);
-    return output;
-})
-.WithName("GetWeatherForecast0")
-.WithOpenApi();
+// app.MapGet("/weatherforecast0", () =>
+// {
+//     // var forecast =  Enumerable.Range(1, 5).Select(index =>
+//     //     new WeatherForecast
+//     //     (
+//     //         DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+//     //         Random.Shared.Next(-20, 55),
+//     //         summaries[Random.Shared.Next(summaries.Length)]
+//     //     ))
+//     //     .ToArray();
+//     // return forecast;
+//     var output = new WeatherForecastLogic(new KeyValueQueries(null)).Get(5);
+//     return output;
+// })
+// .WithName("GetWeatherForecast0")
+// .WithOpenApi();
 
 app.MapControllers();
 

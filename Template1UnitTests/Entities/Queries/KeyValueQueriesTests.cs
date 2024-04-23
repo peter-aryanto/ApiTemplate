@@ -34,7 +34,13 @@ public class KeyValueQueriesTests
         ];
         testAdditionalInfos =
         [
-            new() { AdditionalInfoId = 1, KeyValueId = testKeyValues[0].KeyValueId, KeyValue = testKeyValues[0] },
+            new()
+            {
+                AdditionalInfoId = 1,
+                KeyValueId = testKeyValues[0].KeyValueId,
+                KeyValue = testKeyValues[0],
+                Value1 = "Additional Info Value 1",
+            },
         ];
         testKeyValues[0].AdditionalInfos.Add(testAdditionalInfos[0]);
         mockContext.CreateDbSetMock(x => x.KeyValues, testKeyValues);

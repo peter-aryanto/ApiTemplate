@@ -6,7 +6,14 @@ public class ConsoleUtils
     {
         if (o != null && o is not string && !o.GetType().IsPrimitive)
         {
-            o = System.Text.Json.JsonSerializer.Serialize(o);
+            // using System.Text.Json;
+            // var jsonSerializerOptions = new JsonSerializerOptions
+            // {
+            //     using System.Text.Json.Serialization;
+            //     ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            // };
+            // o = System.Text.Json.JsonSerializer.Serialize(o, jsonSerializerOptions);
+            o = JsonSerializerUtils.Serialize(o);
         }
         Console.WriteLine($"|{o?.ToString()}|{(newLineEnding ? Environment.NewLine : string.Empty)}");
     }

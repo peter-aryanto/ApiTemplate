@@ -1,13 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using Template1.Logics;
 using Template1Console1.Utils;
 
-var Show = (object? o) => ConsoleUtils.Show(o);
+var Show = (object? o) => Template1Console1.Utils.ConsoleUtils.Show(o);
 
-// Demo Library Template1
-var forecast = new WeatherForecastLogic(null).Get();
-Show(forecast);
+await Demo.RunTemplate1LibraryCallsAsync();
 
-// await Demo.RunWebUtilsAsync();
+await Demo.RunWebUtilsAsync();
 
 Show(DateTime.UtcNow);

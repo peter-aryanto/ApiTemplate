@@ -15,9 +15,12 @@ internal class Demo
         using var context1 = EntitiesHelper.CreateContext1FromPool();
         var keyValueQueries = new KeyValueQueries(context1);
         var weatherForecastsLogic = new WeatherForecastLogic(keyValueQueries);
+
         var forecast = weatherForecastsLogic.Get();
         Show(forecast);
+
         var keyValues = await weatherForecastsLogic.GetKeyValuesAsync();
+        JsonSerializerUtils.Indented = true;
         Show(keyValues);
     }
 

@@ -14,6 +14,6 @@ public class Process01Tests
     [Fact]
     public void TestSomething()
     {
-        // Assert.True(sut.DoProcess());
+        Assert.True(sut.DoProcess());
     }
 }

@@ -20,11 +20,10 @@ var targetDoc = targetPdf.Document;
 var targetPages = targetDoc.Pages;
 
 SdhTemplateExternalId prevDocType = SdhTemplateExternalId.RunSheet;
-string prevDocIdentifier = null;
+string? prevDocIdentifier = null;
 var startPageIndex = -1;
 var endPageIndex = -1;
 var fillerPageIndex = -1; // e.g. the checklist page in run sheet, which will be inserted into every even page.
-// targetPages.Add(sourcePages[0]);
 for (var i = 0; i < sourcePages.Count; ++i)
 {
   var pageNumber = i + 1;
@@ -32,29 +31,13 @@ for (var i = 0; i < sourcePages.Count; ++i)
   var text = sourcePdf.GetPageText(pageNumber);
   var docType = RunSheetFormatHelper.DetectDocType(text);
   var docIdentifier = RunSheetFormatHelper.ExtractDocIdentifier(docType, text);
-  // if (i == 0)
-  // {
-  //   prevDocType = docType;
-  //   prevDocIdentifier = docIdentifier;
-  // }
 
-  if (docIdentifier == prevDocIdentifier)
-  {
-    // if (docType == SdhTemplateExternalId.RunSheet)
-    // {
-    //   // do nothing
-    // }
-    // else
-    // {
-    //   targetPages.Add(sourcePages[i]);
-    //   // targetPages.Append(sourcePages[i]);
-    // }
-  }
-  else
+  if (docIdentifier != prevDocIdentifier)
   {
     if (prevDocType == SdhTemplateExternalId.RunSheet && startPageIndex >= 0)
     {
       endPageIndex = Math.Max(i - 2, startPageIndex);
+      // endPageIndex = 3;
       fillerPageIndex = i - 1;
       for (var j = startPageIndex; j <= endPageIndex; ++j)
       {
@@ -65,15 +48,13 @@ for (var i = 0; i < sourcePages.Count; ++i)
 
         targetPages.Add(sourcePages[j]);
         targetPages.Add(sourcePages[fillerPageIndex]);
-        // targetPages.Append(sourcePages[j]);
-        // targetPages.Append(sourcePages[fillerPageIndex]);
       }
+      // break;
     }
 
     if (docType != SdhTemplateExternalId.RunSheet)
     {
       targetPages.Add(sourcePages[i]);
-      // targetPages.Append(sourcePages[i]);
     }
 
     if (docType == SdhTemplateExternalId.RunSheet)
@@ -89,7 +70,6 @@ for (var i = 0; i < sourcePages.Count; ++i)
   prevDocIdentifier = docIdentifier;
 }
 
-// targetPdf.DeletePage(1);
 var timestamp = DateTime.UtcNow.ToString("yyyyMMddTHHmmss");
 targetPdf.SaveDocument(@$"..\..\..\..\..\..\..\Files\target{timestamp}.pdf");
 

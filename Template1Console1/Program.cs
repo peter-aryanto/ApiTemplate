@@ -19,14 +19,35 @@ targetPdf.CreateEmptyDocument();
 var targetDoc = targetPdf.Document;
 var targetPages = targetDoc.Pages;
 
-// for (var i = 1; i <= pages.Count; ++i)
-// {
-  var text = sourcePdf.GetPageText(3);
-  // var text = source.GetPageText(i);
-  // var docType = RunSheetFormatHelper.DetectDocType(text);
-  var docIdentifier = RunSheetFormatHelper.ExtractDocIdentifier(text);
+string prevDocIdentifier = null;
+int startPage;
+int endPage;
+int fillerPage; // e.g. the checklist page in run sheet, which will be inserted into every even page.
+for (var i = 0; i < sourcePages.Count; ++i)
+{
+  var pageNumber = i + 1;
+  // var text = sourcePdf.GetPageText(3);
+  var text = sourcePdf.GetPageText(pageNumber);
+  var docType = RunSheetFormatHelper.DetectDocType(text);
+  if (docType != SdhTemplateExternalId.RunSheet)
+  {
+    targetPages.Append(sourcePages[i]);
+    continue;
+  }
 
-//   break;
-// }
+  var docIdentifier = RunSheetFormatHelper.ExtractDocIdentifier(docType, text);
+  // if (docIdentifier != prevDocIdentifier)
+  // {
+  //   startPage
+  // }
+
+  targetPages.Add(sourcePages[i]);
+  break;
+
+  prevDocIdentifier = docIdentifier;
+}
+
+var timestamp = DateTime.UtcNow.ToString("yyyyMMddTHHmmss");
+targetPdf.SaveDocument(@$"..\..\..\..\..\..\..\Files\target{timestamp}.pdf");
 
 Show(DateTime.UtcNow);

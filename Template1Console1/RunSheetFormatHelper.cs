@@ -2,18 +2,18 @@ namespace Template1Console1.Utils;
 
 public class RunSheetFormatHelper
 {
-  internal static string ExtractDocIdentifier(string pageText)
-  {
-    var docType = DetectDocType(pageText);
-    return ExtractDocIdentifier(docType, pageText);
-  }
+  // internal static string ExtractDocIdentifier(string pageText)
+  // {
+  //   var docType = DetectDocType(pageText);
+  //   return ExtractDocIdentifier(docType, pageText);
+  // }
 
-  private static SdhTemplateExternalId DetectDocType(string pageText)
+  internal static SdhTemplateExternalId DetectDocType(string pageText)
   {
     return pageText.IndexOf("Batch") == -1 ? SdhTemplateExternalId.RunSheet : SdhTemplateExternalId.OutputLabel;
   }
 
-  private static string ExtractDocIdentifier(SdhTemplateExternalId docType, string pageText)
+  internal static string ExtractDocIdentifier(SdhTemplateExternalId docType, string pageText)
   {
     return docType == SdhTemplateExternalId.RunSheet
       ? ExtractDocIdentifier("Stream Name: ", pageText)

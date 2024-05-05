@@ -19,34 +19,77 @@ targetPdf.CreateEmptyDocument();
 var targetDoc = targetPdf.Document;
 var targetPages = targetDoc.Pages;
 
+SdhTemplateExternalId prevDocType = SdhTemplateExternalId.RunSheet;
 string prevDocIdentifier = null;
-int startPage;
-int endPage;
-int fillerPage; // e.g. the checklist page in run sheet, which will be inserted into every even page.
+var startPageIndex = -1;
+var endPageIndex = -1;
+var fillerPageIndex = -1; // e.g. the checklist page in run sheet, which will be inserted into every even page.
+// targetPages.Add(sourcePages[0]);
 for (var i = 0; i < sourcePages.Count; ++i)
 {
   var pageNumber = i + 1;
   // var text = sourcePdf.GetPageText(3);
   var text = sourcePdf.GetPageText(pageNumber);
   var docType = RunSheetFormatHelper.DetectDocType(text);
-  if (docType != SdhTemplateExternalId.RunSheet)
-  {
-    targetPages.Append(sourcePages[i]);
-    continue;
-  }
-
   var docIdentifier = RunSheetFormatHelper.ExtractDocIdentifier(docType, text);
-  // if (docIdentifier != prevDocIdentifier)
+  // if (i == 0)
   // {
-  //   startPage
+  //   prevDocType = docType;
+  //   prevDocIdentifier = docIdentifier;
   // }
 
-  targetPages.Add(sourcePages[i]);
-  break;
+  if (docIdentifier == prevDocIdentifier)
+  {
+    // if (docType == SdhTemplateExternalId.RunSheet)
+    // {
+    //   // do nothing
+    // }
+    // else
+    // {
+    //   targetPages.Add(sourcePages[i]);
+    //   // targetPages.Append(sourcePages[i]);
+    // }
+  }
+  else
+  {
+    if (prevDocType == SdhTemplateExternalId.RunSheet && startPageIndex >= 0)
+    {
+      endPageIndex = Math.Max(i - 2, startPageIndex);
+      fillerPageIndex = i - 1;
+      for (var j = startPageIndex; j <= endPageIndex; ++j)
+      {
+        if (j == fillerPageIndex)
+        {
+          continue;
+        }
 
+        targetPages.Add(sourcePages[j]);
+        targetPages.Add(sourcePages[fillerPageIndex]);
+        // targetPages.Append(sourcePages[j]);
+        // targetPages.Append(sourcePages[fillerPageIndex]);
+      }
+    }
+
+    if (docType != SdhTemplateExternalId.RunSheet)
+    {
+      targetPages.Add(sourcePages[i]);
+      // targetPages.Append(sourcePages[i]);
+    }
+
+    if (docType == SdhTemplateExternalId.RunSheet)
+    {
+      startPageIndex = i;
+    }
+  }
+
+  // targetPages.Add(sourcePages[i]);
+  // break;
+
+  prevDocType = docType;
   prevDocIdentifier = docIdentifier;
 }
 
+// targetPdf.DeletePage(1);
 var timestamp = DateTime.UtcNow.ToString("yyyyMMddTHHmmss");
 targetPdf.SaveDocument(@$"..\..\..\..\..\..\..\Files\target{timestamp}.pdf");
 
